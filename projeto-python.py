@@ -25,7 +25,7 @@ def mostrar_menu():
     print("4 - Sair")
 
 def simular_um():
-    print("\nEscolha uma convênio: ")
+    print("\nEscolha um convênio: ")
     for i in range(len(convenios)):
         print(f"{i + 1} - {convenios[i]}")
     escolha_convenio = int(input("Digite o número do convênio: "))
