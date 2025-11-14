@@ -19,40 +19,65 @@ valores_fixos = {
 
 def mostrar_menu():
     print("\n=== MENU PRINCIPAL ===")
-    print("1 - Simular faturamento de UM convênio")
-    print("2 - Simular faturamento de TODOS os convênios")
-    print("3 - Mostrar meta do hospital")
+    print("1 - Mostrar faturamento de UM convênio")
+    print("2 - Mostrar faturamento de TODOS os convênios")
+    print("3 - Mostrar faturamento total do hospital")
     print("4 - Sair")
+
+def submenu_locais(convenio):
+    while True:
+        print(f"\n--- CONVÊNIO: {convenio} ---")
+        print("Escolha o local:")
+        print("1 - Internação")
+        print("2 - Pronto Socorro")
+        print("3 - Clínica")
+        print("4 - Imagem")
+        print("5 - Valor total do convênio")
+        print("6 - Voltar")
+
+        try:
+            escolha_local = int(input("Digite o número do local: "))
+        except ValueError:
+            print("Opção inválida. Digite um número.")
+            continue
+
+        if 1 <= escolha_local <= 4:
+            local_escolhido = locais[escolha_local - 1]
+            valor = valores_fixos[convenio][local_escolhido]
+            print(f"\n{convenio} - {local_escolhido}")
+            print(f"Valor faturado: R$ {valor:.2f}")
+
+        elif escolha_local == 5:
+            total_convenio = sum(valores_fixos[convenio][local] for local in locais)
+            print(f"\n--- Faturamento total do convênio {convenio} ---")
+            for local in locais:
+                print(f"  {local}: R$ {valores_fixos[convenio][local]:.2f}")
+            print(f"\nTotal faturado pelo convênio: R$ {total_convenio:.2f}")
+
+        elif escolha_local == 6:
+            break
+        else:
+            print("Opção inválida. Tente novamente.")
 
 def simular_um():
     print("\nEscolha um convênio: ")
     for i in range(len(convenios)):
         print(f"{i + 1} - {convenios[i]}")
-    escolha_convenio = int(input("Digite o número do convênio: "))
+
+    try:
+        escolha_convenio = int(input("Digite o número do convênio: "))
+    except ValueError:
+        print("Entrada inválida. Digite um número.")
+        return
 
     if 1 <= escolha_convenio <= len(convenios):
         convenio = convenios[escolha_convenio - 1]
-        print(f"\nConvênio seleciona: {convenio}")
-
-        total = 0
-        for local in locais:
-            valor = valores_fixos[convenio][local]
-            print(f"{local}: R$ {valor:.2f}")
-            total += valor
-
-        print(f"\nTotal faturado pelo convênio {convenio}: R$ {total:.2f}")
-        print(f"Meta do convênio: R$ {metas_convenio[convenio]:.2f}")
-        
-        if total >= metas_convenio[convenio]:
-            print("Meta atingida!")
-        else:
-            print("Meta não atingida.")
+        submenu_locais(convenio)
     else:
         print("Opção inválida. Tente novamente.")
 
 def simular_todos():
-    print("\n=== SIMULAÇÃO DE TODOS OS CONVÊNIOS ===")
-    
+    print("\n=== FATURAMENTO DE TODOS OS CONVÊNIOS ===")
     total_geral = 0  
 
     for convenio in convenios:
@@ -64,47 +89,28 @@ def simular_todos():
             print(f"  {local}: R$ {valor:.2f}")
             total_convenio += valor
 
-        print(f"Total faturado: R$ {total_convenio:.2f}")
-        print(f"Meta do convênio: R$ {metas_convenio[convenio]:.2f}")
-
-        if total_convenio >= metas_convenio[convenio]:
-            print("Meta atingida!")
-        else:
-            print("Meta não atingida.")
-
+        print(f"Total faturado pelo convênio: R$ {total_convenio:.2f}")
         total_geral += total_convenio
 
     print("\n=== RESUMO FINAL ===")
     print(f"Faturamento total do hospital: R$ {total_geral:.2f}")
-    print(f"Meta do hospital: R$ {meta_hospital:.2f}")
-
-    if total_geral >= meta_hospital:
-        print("Meta hospitalar atingida!")
-    else:
-        print("Meta hospitalar não atingida.")
 
 def meta_total():
-    print("\n=== META DO HOSPITAL ===")
+    print("\n=== FATURAMENTO TOTAL DO HOSPITAL ===")
 
     total_geral = 0
-
     for convenio in convenios:
         total_convenio = 0
         for local in locais:
             total_convenio += valores_fixos[convenio][local]
         total_geral += total_convenio
 
-    print(f"\nFaturamento total do hospital: R$ {total_geral:.2f}")
-    print(f"Meta do hospital: R$ {meta_hospital:.2f}")
+    print(f"Faturamento total do hospital: R$ {total_geral:.2f}")
 
-    if total_geral >= meta_hospital:
-        print("Meta atingida!")
-    else:
-        print("Meta não atingida.")
-              
+# Loop principal
 while True:
     mostrar_menu()
-    opcao = input("\nEscolha um opção: ")
+    opcao = input("\nEscolha uma opção: ")
 
     if opcao == "1":
         simular_um()
